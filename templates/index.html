@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Feature 6: First-Time User Welcome Guide Modal -->
+    <div id="welcome-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Welcome to FraudShield 🛡️</h2>
+            <p class="subtitle" style="font-size: 18px; color: var(--airtel-red);">5 Golden Rules to Stay Safe Online
+            </p>
+            <ul class="safety-rules" style="font-size: 16px;">
+                <li><span>🔐</span> Never share your OTP — not even with your bank</li>
+                <li><span>💸</span> Real banks never charge a fee to send you money</li>
+                <li><span>⏰</span> Urgent messages are almost always scams</li>
+                <li><span>🔍</span> Always verify before you pay anyone</li>
+                <li><span>🚫</span> When in doubt — do NOT pay, check first</li>
+            </ul>
+            <button class="btn-primary" style="font-size: 18px; padding: 15px 30px; width: 100%;"
+                onclick="closeWelcomeModal()">Got it, Keep Me Safe! 🛡️</button>
+        </div>
+    </div>
+
+    <!-- Feature 2: Click Simulation Overlay -->
+    <div id="simulation-overlay" class="simulation-overlay hidden">
+        <div class="sim-content">
+            <h1 class="sim-flash">💸 ₹25,000 Debited from your account!</h1>
+            <h2 class="sim-flash delayed-1">⚠️ Your personal data has been stolen!</h2>
+            <h2 class="sim-flash delayed-2">🔓 Your UPI PIN has been compromised!</h2>
+            <p class="sim-reveal hidden">This is what ACTUALLY happens when you click scam links. FraudShield AI
+                protected you.</p>
+            <div class="sim-shield hidden">🛡️</div>
+            <button class="btn-success sim-reveal hidden" onclick="closeSimulation()">I understand, keep me safe
+                🛡️</button>
+        </div>
+    </div>
+
+    <!-- Feature 3: Guardian Character -->
+    <div class="guardian-container" id="guardian-container" onclick="toggleGuardianChat()">
+        <div class="guardian-tip hidden" id="guardian-tip">Hi! I am your FraudShield Guardian 🛡️</div>
+        <div class="guardian-icon">🛡️</div>
+    </div>
+
+    <!-- Loading Spinner Overlay -->
+    <div id="spinner-overlay" class="spinner-overlay hidden">
+        <div class="spinner"></div>
+        <p>Analyzing Risk...</p>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">Analysis Complete!</div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo-circle">F</div>
+            <h1>FraudShield </h1>
+        </div>
+        <div class="header-right">
+            <p class="subtitle">Smart Spam & Fraud Detection</p>
+            <button id="simple-mode-toggle" class="btn-text-icon" onclick="toggleSimpleMode()"
+                title="Toggle Simple Language Mode">🎓 Simple Mode: OFF</button>
+            <button id="dark-mode-toggle" class="btn-icon" onclick="toggleDarkMode()"
+                title="Toggle Dark Mode">🌙</button>
+        </div>
+    </header>
+
+    <!-- Feature 7: Safety Awareness Gamification Strip -->
+    <div class="safety-strip">
+        <div class="strip-text">🛡️ You have checked <span id="strip-checks-count">0</span> transactions!</div>
+        <div class="strip-progress-bar">
+            <div id="strip-progress-fill"></div>
+        </div>
+        <div id="strip-milestone-msg" class="strip-milestone">Great start! Always check before you pay!</div>
+    </div>
+
+    <!-- Stats Dashboard -->
+    <section class="stats-dashboard">
+        <div class="stat-card">
+            <h4>Total Scams Detected</h4>
+            <p id="stat-scams">0</p>
+        </div>
+        <div class="stat-card">
+            <h4>Total Safe Transactions</h4>
+            <p id="stat-safe">0</p>
+        </div>
+        <div class="stat-card">
+            <h4>Detection Accuracy</h4>
+            <p id="stat-accuracy">N/A</p>
+        </div>
+        <div class="stat-card">
+            <h4>Most Common Scam</h4>
+            <p id="stat-common-scam">None</p>
+        </div>
+    </section>
+
+    <div class="container">
+
+        <!-- Main Analyzer Section -->
+        <main class="analyzer-section">
+            <div class="card analyzer-card">
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('message')">📱 Message</button>
+                    <button class="tab-btn" onclick="switchTab('email')">📧 Email</button>
+                    <button class="tab-btn" onclick="switchTab('transaction')">💳 Transaction</button>
+                </div>
+
+                <!-- Input Forms -->
+                <div class="form-container">
+
+                    <div class="input-group">
+                        <label for="sender">Sender (Phone / Email / UPI)</label>
+                        <input type="text" id="sender">
+                    </div>
+
+                    <div id="email-fields" class="input-group hidden">
+                        <label for="subject">Email Subject</label>
+                        <input type="text" id="subject">
+                    </div>
+
+                    <div id="transaction-fields" class="input-group hidden">
+                        <label for="amount">Amount (₹)</label>
+                        <input type="number" id="amount">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="message">Message Content</label>
+                        <textarea id="message" rows="4"></textarea>
+                    </div>
+
+                    <div class="action-row">
+                        <button class="btn-primary" id="analyze-btn" onclick="analyze()">Analyze Risk</button>
+                        <button class="btn-secondary scam-btn" onclick="fillScamDemo()">🚨 Scam Case</button>
+                        <button class="btn-secondary safe-btn" onclick="fillSafeDemo()">✅ Safe Case</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div id="result-card" class="card result-card hidden fade-in">
+
+                <!-- Safe Checkmark Overlay -->
+                <div id="safe-checkmark" class="safe-checkmark-overlay hidden">
+                    <div class="checkmark-circle">
+                        <div class="checkmark-stem"></div>
+                        <div class="checkmark-kick"></div>
+                    </div>
+                </div>
+
+                <div class="result-header">
+                    <h2>Analysis Result</h2>
+                    <span id="scam-type-badge" class="badge">None</span>
+                </div>
+
+                <!-- Animated Circular Gauge -->
+                <div class="gauge-container">
+                    <svg class="circular-chart" viewBox="0 0 36 36">
+                        <path class="circle-bg" d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle" id="risk-gauge-circle" stroke-dasharray="0, 100" d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="20.35" class="percentage" id="risk-text-value">0%</text>
+                    </svg>
+                    <div class="gauge-labels">
+                        <h3 id="risk-level-title" class="risk-title">Low Risk</h3>
+                        <p><span id="confidence-label">Confidence:</span> <span id="confidence-score">0</span>%</p>
+                    </div>
+                </div>
+
+                <div class="result-details">
+                    <!-- Feature 4: Scam Education Card -->
+                    <div id="scam-explainer-card" class="explainer-card hidden">
+                        <div class="explainer-header">
+                            <span class="explainer-icon">ℹ️</span>
+                            <h4 id="explainer-title">What is this scam?</h4>
+                        </div>
+                        <p id="explainer-text" style="font-weight: 600;"></p>
+                        <div class="protect-box" style="margin-top: 10px;">
+                            <h5 style="margin-bottom: 5px;">How to protect yourself:</h5>
+                            <ul id="explainer-protect-list" style="padding-left: 20px; font-size: 14px;"></ul>
+                        </div>
+                        <button id="card-whatsapp-share" class="btn-whatsapp btn-small"
+                            style="margin-top: 15px; width: 100%; text-align: center;" onclick="shareCardOnWhatsApp()">
+                            💬 Share Warning on WhatsApp
+                        </button>
+                    </div>
+
+                    <div class="reasons-box">
+                        <h4 id="breakdown-title">Risk Breakdown (Explainable AI)</h4>
+                        <div id="reasons-list" class="breakdown-table"></div>
+                    </div>
+                    <div class="suggestions-box" id="suggestions-box">
+                        <h4 id="suggestions-title">Smart Suggestions</h4>
+                        <ul id="suggestions-list" class="suggestion-items"></ul>
+                    </div>
+                    <div class="message-highlight-box">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4>Analyzed Text:</h4>
+                            <button class="btn-small btn-secondary" onclick="copyAnalyzedText()">📋 Copy</button>
+                        </div>
+                        <p id="highlighted-text"></p>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="btn-report" class="btn-danger" onclick="reportSpam()">🚨 Report as Spam</button>
+                    <button id="btn-trust" class="btn-success" onclick="markTrusted()">✅ Mark as Trusted</button>
+                    <button id="whatsapp-share-btn" class="btn-whatsapp" onclick="shareOnWhatsApp()">💬 Warn a
+                        Friend</button>
+                </div>
+                <p id="action-msg" class="action-msg"></p>
+            </div>
+
+        </main>
+
+        <!-- Sidebar / History -->
+        <aside class="history-section">
+            <div class="card safety-score-card">
+                <h3>🛡️ Safety Awareness</h3>
+                <p class="score-text">Score: <span id="safety-score">0</span> XP</p>
+                <p id="safety-level-msg" class="level-msg">You're starting your safety journey!</p>
+                <div class="xp-bar-bg">
+                    <div id="xp-fill" class="xp-bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="card history-card">
+                <div class="history-header">
+                    <h3>Recent Checks</h3>
+                    <button class="btn-secondary btn-small" onclick="refreshApp()">Refresh</button>
+                </div>
+                <div id="history-list" class="history-list">
+                    <div class="spinner-small" id="history-spinner"></div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

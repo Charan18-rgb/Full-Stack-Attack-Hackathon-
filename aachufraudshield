@@ -1,0 +1,50 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route('/check-message', methods=['POST'])
+def check_message():
+    data = request.json
+    message = data.get("message", "").lower()
+
+    risk = 0
+    reasons = []
+
+    keywords = [
+        "lottery", "won", "prize", "reward",
+        "urgent", "otp", "refund", "click",
+        "link", "bank", "verify"
+    ]
+
+    for word in keywords:
+        if word in message:
+            risk += 15
+            reasons.append(f"{word} detected")
+
+    if "http" in message or "www" in message:
+        risk += 20
+        reasons.append("suspicious link")
+
+    if "now" in message or "immediately" in message:
+        risk += 10
+        reasons.append("urgency detected")
+
+    if risk > 100:
+        risk = 100
+
+    level = "LOW"
+    if risk >= 60:
+        level = "HIGH"
+    elif risk >= 30:
+        level = "MEDIUM"
+
+    return jsonify({
+        "risk_score": risk,
+        "risk_level": level,
+        "reasons": reasons
+    })
+
+if __name__ == '__main__':
+    app.run(debug=True)
