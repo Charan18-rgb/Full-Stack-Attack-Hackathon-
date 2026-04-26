@@ -600,7 +600,9 @@ def reset_app():
     spam_reports.clear()
     return jsonify({"success": True, "message": "Dashboard Reset"}), 200
 
+import os
+
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT", 10000))
     print(f"[*] FraudShield Starting on port {port}...")
     app.run(host="0.0.0.0", port=port)
